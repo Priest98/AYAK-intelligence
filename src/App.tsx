@@ -8,7 +8,9 @@ import Portfolio from './components/Portfolio';
 import TechStack from './components/TechStack';
 import Testimonials from './components/Testimonials';
 import Contact from './components/Contact';
+import Chatbot from './components/Chatbot';
 import Footer from './components/Footer';
+import { Element } from 'react-scroll';
 
 export default function App() {
   return (
@@ -22,9 +24,12 @@ export default function App() {
         <HowItWorks />
         <Portfolio />
         <Testimonials />
+        <Element name="contact">
         <Contact />
+      </Element>
       </main>
       <Footer />
+      <Chatbot />
     </div>
   );
 }
