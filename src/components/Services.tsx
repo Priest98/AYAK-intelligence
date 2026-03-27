@@ -1,56 +1,71 @@
-import React from 'react';
-import { motion } from 'motion/react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   Network, 
   MessageSquareCode, 
   Settings2, 
   Layers, 
   Database, 
-  Lightbulb 
+  Lightbulb,
+  Filter
 } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 import { Link } from 'react-scroll';
+
+const categories = ['All', 'Automation', 'Chatbots', 'Data'];
 
 const services = [
   {
     icon: Network,
     title: 'AI Workflow Automation',
     desc: 'End-to-end automation of complex business processes using custom AI agents.',
-    color: 'from-blue-500 to-cyan-500'
+    color: 'from-blue-500 to-cyan-500',
+    category: 'Automation'
   },
   {
     icon: MessageSquareCode,
     title: 'Chatbot Development',
     desc: 'Intelligent conversational AI that handles support, sales, and lead qualification.',
-    color: 'from-purple-500 to-pink-500'
+    color: 'from-purple-500 to-pink-500',
+    category: 'Chatbots'
   },
   {
     icon: Settings2,
     title: 'Business Process Automation',
     desc: 'Streamlining internal operations to reduce overhead and eliminate human error.',
-    color: 'from-cyan-500 to-emerald-500'
+    color: 'from-cyan-500 to-emerald-500',
+    category: 'Automation'
   },
   {
     icon: Layers,
     title: 'AI Integrations',
     desc: 'Connecting your existing tools with powerful AI models for enhanced capabilities.',
-    color: 'from-orange-500 to-red-500'
+    color: 'from-orange-500 to-red-500',
+    category: 'Data'
   },
   {
     icon: Database,
     title: 'Data Automation',
     desc: 'Automated data scraping, cleaning, and analysis for real-time business insights.',
-    color: 'from-indigo-500 to-purple-500'
+    color: 'from-indigo-500 to-purple-500',
+    category: 'Data'
   },
   {
     icon: Lightbulb,
     title: 'Custom AI Solutions',
     desc: 'Bespoke AI development tailored to solve your specific business challenges.',
-    color: 'from-yellow-500 to-orange-500'
+    color: 'from-yellow-500 to-orange-500',
+    category: 'Automation'
   }
 ];
 
 export default function Services() {
+  const [activeCategory, setActiveCategory] = useState('All');
+
+  const filteredServices = activeCategory === 'All' 
+    ? services 
+    : services.filter(service => service.category === activeCategory);
+
   return (
     <section id="services" className="py-24 bg-card/30">
       <div className="max-w-7xl mx-auto px-6">
@@ -68,47 +83,74 @@ export default function Services() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl font-bold"
+            className="text-4xl md:text-5xl font-bold mb-10"
           >
             Our <span className="text-accent-purple">AI</span> Services
           </motion.h3>
+
+          {/* Filter Tags */}
+          <div className="flex flex-wrap justify-center gap-3 mb-12">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={cn(
+                  "px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 border",
+                  activeCategory === cat
+                    ? "bg-accent-cyan text-background border-accent-cyan neon-glow-cyan"
+                    : "glass border-white/10 text-muted hover:border-accent-cyan/50 hover:text-foreground"
+                )}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              whileHover={{ y: -10 }}
-              className="group p-8 rounded-3xl glass hover:bg-white/10 transition-all duration-300 relative overflow-hidden"
-            >
-              <div className={cn(
-                "absolute top-0 right-0 w-32 h-32 bg-gradient-to-br opacity-0 group-hover:opacity-10 transition-opacity blur-3xl",
-                service.color
-              )} />
-              
-              <div className="w-14 h-14 rounded-2xl glass flex items-center justify-center mb-6 text-accent-cyan group-hover:neon-glow-cyan transition-all">
-                <service.icon className="w-7 h-7" />
-              </div>
-              
-              <h4 className="text-xl font-bold mb-3 group-hover:text-accent-cyan transition-colors">{service.title}</h4>
-              <p className="text-muted leading-relaxed">{service.desc}</p>
-              
-              <Link
-                to="contact"
-                smooth={true}
-                offset={-80}
-                className="mt-8 flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-accent-cyan opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+        <motion.div 
+          layout
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          <AnimatePresence mode="popLayout">
+            {filteredServices.map((service, i) => (
+              <motion.div
+                key={service.title}
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ 
+                  duration: 0.4,
+                  layout: { duration: 0.4 }
+                }}
+                whileHover={{ y: -10 }}
+                className="group p-8 rounded-3xl glass hover:bg-white/10 transition-all duration-300 relative overflow-hidden h-full flex flex-col"
               >
-                Learn More
-                <div className="w-8 h-[1px] bg-accent-cyan" />
-              </Link>
-            </motion.div>
-          ))}
-        </div>
+                <div className={cn(
+                  "absolute top-0 right-0 w-32 h-32 bg-gradient-to-br opacity-0 group-hover:opacity-10 transition-opacity blur-3xl",
+                  service.color
+                )} />
+                
+                <div className="w-14 h-14 rounded-2xl glass flex items-center justify-center mb-6 text-accent-cyan group-hover:neon-glow-cyan transition-all">
+                  <service.icon className="w-7 h-7" />
+                </div>
+                
+                <h4 className="text-xl font-bold mb-3 group-hover:text-accent-cyan transition-colors">{service.title}</h4>
+                <p className="text-muted leading-relaxed flex-1">{service.desc}</p>
+                
+                <Link
+                  to="contact"
+                  smooth={true}
+                  offset={-80}
+                  className="mt-8 flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-accent-cyan opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+                >
+                  Learn More
+                  <div className="w-8 h-[1px] bg-accent-cyan" />
+                </Link>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </section>
   );
