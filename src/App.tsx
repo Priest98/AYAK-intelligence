@@ -7,6 +7,7 @@ import HowItWorks from './components/HowItWorks';
 import Portfolio from './components/Portfolio';
 import TechStack from './components/TechStack';
 import Testimonials from './components/Testimonials';
+import Trends from './components/Trends';
 import Contact from './components/Contact';
 import Chatbot from './components/Chatbot';
 import Footer from './components/Footer';
@@ -21,6 +22,7 @@ export default function App() {
         <TechStack />
         <About />
         <Services />
+        <Trends />
         <HowItWorks />
         <Portfolio />
         <Testimonials />

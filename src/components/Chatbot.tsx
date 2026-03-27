@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MessageSquare, X, Send, Bot, User, Loader2 } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, User as UserIcon, Loader2 } from 'lucide-react';
+import { auth, db, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from '../lib/firebase';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { cn } from '../lib/utils';
 
 interface Message {
   id: string;
   text: string;
   sender: 'ai' | 'user';
-  timestamp: Date;
+  timestamp: any;
 }
 
 const KNOWLEDGE_BASE = {
@@ -22,11 +24,42 @@ const KNOWLEDGE_BASE = {
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { id: '1', text: KNOWLEDGE_BASE.greetings[0], sender: 'ai', timestamp: new Date() }
+    { id: 'initial', text: KNOWLEDGE_BASE.greetings[0], sender: 'ai', timestamp: new Date() }
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribeAuth();
+  }, []);
+
+  useEffect(() => {
+    if (!user || !isOpen) return;
+
+    const messagesRef = collection(db, 'users', user.uid, 'messages');
+    const q = query(messagesRef, orderBy('timestamp', 'asc'));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const dbMessages = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Message[];
+      
+      if (dbMessages.length > 0) {
+        setMessages([
+          { id: 'initial', text: KNOWLEDGE_BASE.greetings[0], sender: 'ai', timestamp: new Date() },
+          ...dbMessages
+        ]);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [user, isOpen]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -34,23 +67,36 @@ export default function Chatbot() {
     }
   }, [messages, isTyping]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
 
-    const userMsg: Message = {
-      id: Date.now().toString(),
-      text: input,
-      sender: 'user',
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMsg]);
+    const userText = input;
     setInput('');
+
+    if (user) {
+      const messagesRef = collection(db, 'users', user.uid, 'messages');
+      await addDoc(messagesRef, {
+        text: userText,
+        sender: 'user',
+        timestamp: serverTimestamp(),
+        userId: user.uid,
+        role: 'user'
+      });
+    } else {
+      const userMsg: Message = {
+        id: Date.now().toString(),
+        text: userText,
+        sender: 'user',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, userMsg]);
+    }
+
     setIsTyping(true);
 
     // Simulated AI Response Logic
-    setTimeout(() => {
-      const lowerInput = input.toLowerCase();
+    setTimeout(async () => {
+      const lowerInput = userText.toLowerCase();
       let responseText = KNOWLEDGE_BASE.default;
 
       if (lowerInput.includes('service') || lowerInput.includes('capabilities')) responseText = KNOWLEDGE_BASE.services;
@@ -59,14 +105,24 @@ export default function Chatbot() {
       else if (lowerInput.includes('contact') || lowerInput.includes('book') || lowerInput.includes('call') || lowerInput.includes('consultation')) responseText = KNOWLEDGE_BASE.contact;
       else if (lowerInput.includes('hi') || lowerInput.includes('hello') || lowerInput.includes('hey')) responseText = KNOWLEDGE_BASE.greetings[1];
 
-      const aiMsg: Message = {
-        id: (Date.now() + 1).toString(),
-        text: responseText,
-        sender: 'ai',
-        timestamp: new Date()
-      };
-
-      setMessages(prev => [...prev, aiMsg]);
+      if (user) {
+        const messagesRef = collection(db, 'users', user.uid, 'messages');
+        await addDoc(messagesRef, {
+          text: responseText,
+          sender: 'ai',
+          timestamp: serverTimestamp(),
+          userId: user.uid,
+          role: 'model'
+        });
+      } else {
+        const aiMsg: Message = {
+          id: (Date.now() + 1).toString(),
+          text: responseText,
+          sender: 'ai',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, aiMsg]);
+      }
       setIsTyping(false);
     }, 1500);
   };
@@ -92,7 +148,9 @@ export default function Chatbot() {
                   <h4 className="font-bold text-sm tracking-tight text-foreground">AYAK Assistant</h4>
                   <div className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-[10px] font-bold text-muted uppercase tracking-wider">Online</span>
+                    <span className="text-[10px] font-bold text-muted uppercase tracking-wider">
+                      {user ? 'Cloud Synced' : 'Guest Mode'}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -123,7 +181,7 @@ export default function Chatbot() {
                       ? "bg-accent-purple/20 border-accent-purple/30 text-accent-purple" 
                       : "bg-accent-cyan/20 border-accent-cyan/30 text-accent-cyan"
                   )}>
-                    {msg.sender === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                    {msg.sender === 'user' ? <UserIcon className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                   </div>
                   <div className={cn(
                     "max-w-[75%] p-3 rounded-2xl text-sm leading-relaxed",
@@ -157,7 +215,7 @@ export default function Chatbot() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder="Ask something..."
+                  placeholder={user ? "Ask something..." : "Sign in to save chat history"}
                   className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-accent-cyan/50 focus:ring-1 focus:ring-accent-cyan/50 transition-all font-medium pr-10"
                 />
                 <button

@@ -8,10 +8,70 @@ export default function Hero() {
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
       {/* Background Elements */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-accent-cyan/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-accent-purple/10 rounded-full blur-[120px]" />
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        {/* Animated Background Shapes */}
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            x: [0, 50, 0],
+            y: [0, -30, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className="absolute top-1/4 -left-20 w-[500px] h-[500px] bg-accent-cyan/10 rounded-full blur-[120px]"
+        />
+        <motion.div
+          animate={{
+            scale: [1, 1.3, 1],
+            x: [0, -60, 0],
+            y: [0, 40, 0],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className="absolute bottom-1/4 -right-20 w-[600px] h-[600px] bg-accent-purple/10 rounded-full blur-[120px]"
+        />
+
+        {/* Floating Particles/Shapes */}
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: [0.1, 0.3, 0.1],
+              x: [Math.random() * 100 - 50, Math.random() * 100 - 50],
+              y: [Math.random() * 100 - 50, Math.random() * 100 - 50],
+              rotate: [0, 360],
+            }}
+            transition={{
+              duration: 10 + Math.random() * 10,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+            className="absolute hidden md:block"
+            style={{
+              top: `${20 + Math.random() * 60}%`,
+              left: `${10 + Math.random() * 80}%`,
+              width: `${2 + Math.random() * 4}px`,
+              height: `${2 + Math.random() * 4}px`,
+              backgroundColor: i % 2 === 0 ? '#00f2ff' : '#bc13fe',
+              boxShadow: `0 0 10px ${i % 2 === 0 ? '#00f2ff' : '#bc13fe'}`,
+              borderRadius: '50%',
+            }}
+          />
+        ))}
+
+        {/* Network Lines Visualization (Simulated with Gradient Overlay) */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_rgba(5,5,5,0.8)_100%)]" />
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5" />
+        
+        {/* Subtle Grid Effect */}
+        <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#888_1px,transparent_1px),linear-gradient(to_bottom,#888_1px,transparent_1px)] bg-[size:40px_40px]" />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
