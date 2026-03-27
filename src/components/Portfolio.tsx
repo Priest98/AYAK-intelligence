@@ -118,7 +118,7 @@ export default function Portfolio() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
               onClick={() => setSelectedProject(project)}
-              className="group relative rounded-3xl overflow-hidden glass aspect-video cursor-pointer"
+              className="group relative rounded-3xl overflow-hidden glass aspect-video cursor-pointer hover-lift"
             >
               <img
                 src={project.image}
@@ -218,10 +218,10 @@ export default function Portfolio() {
                   </div>
 
                   <div className="pt-8 flex flex-wrap gap-4">
-                    <button className="px-8 py-4 rounded-full bg-accent-cyan text-background font-bold hover:neon-glow-cyan transition-all flex items-center gap-2">
+                    <button className="px-8 py-4 rounded-full bg-accent-cyan text-background font-bold hover-glow-cyan transition-all flex items-center gap-2">
                        Launch Project <ExternalLink className="w-5 h-5" />
                     </button>
-                    <button className="px-8 py-4 rounded-full glass font-bold hover:bg-white/10 transition-all flex items-center gap-2 border border-white/5">
+                    <button className="px-8 py-4 rounded-full glass font-bold hover-glass-bright transition-all flex items-center gap-2 border border-white/5">
                        View Source <Github className="w-5 h-5" />
                     </button>
                   </div>

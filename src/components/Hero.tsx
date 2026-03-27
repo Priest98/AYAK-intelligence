@@ -114,7 +114,7 @@ export default function Hero() {
             to="contact"
             smooth={true}
             offset={-80}
-            className="group px-8 py-4 rounded-full bg-accent-cyan text-background font-bold text-lg hover:neon-glow-cyan transition-all flex items-center gap-2 cursor-pointer"
+            className="group px-8 py-4 rounded-full bg-accent-cyan text-background font-bold text-lg hover-glow-cyan transition-all flex items-center gap-2 cursor-pointer"
           >
             Book a Consultation
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -122,7 +122,7 @@ export default function Hero() {
           <Link
             to="portfolio"
             smooth={true}
-            className="px-8 py-4 rounded-full glass font-bold text-lg hover:bg-white/10 transition-all cursor-pointer"
+            className="px-8 py-4 rounded-full glass font-bold text-lg hover-glass-bright transition-all cursor-pointer"
           >
             View Our Work
           </Link>
@@ -140,7 +140,7 @@ export default function Hero() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.8 + i * 0.1 }}
-              className="flex flex-col items-center gap-2"
+              className="flex flex-col items-center gap-2 hover-lift cursor-default"
             >
               <stat.icon className={cn("w-8 h-8", stat.color)} />
               <span className="text-sm font-bold tracking-tight text-muted uppercase">{stat.label}</span>

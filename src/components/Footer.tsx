@@ -15,11 +15,11 @@ export default function Footer() {
             to="contact"
             smooth={true}
             offset={-80}
-            className="px-10 py-5 rounded-full bg-accent-cyan text-background font-bold text-xl hover:neon-glow-cyan transition-all flex items-center gap-3 mx-auto cursor-pointer"
+            className="px-8 py-4 rounded-full bg-accent-cyan text-background font-bold text-lg hover-glow-cyan transition-all cursor-pointer inline-block"
           >
             Book a Strategy Call
-            <ArrowUpRight className="w-6 h-6" />
           </Link>
+          <ArrowUpRight className="w-6 h-6 inline-block ml-2 text-accent-cyan" />
         </div>
 
         <div className="grid md:grid-cols-4 gap-12 mb-16">
@@ -45,12 +45,12 @@ export default function Footer() {
           <div>
             <h4 className="font-bold mb-6 uppercase tracking-widest text-xs text-accent-cyan">Navigation</h4>
             <ul className="space-y-4 text-muted font-medium">
-              {['About', 'Services', 'Process', 'Portfolio'].map((item) => (
+              {['About', 'Services', 'Portfolio', 'Contact'].map((item) => (
                 <li key={item}>
-                  <Link
-                    to={item.toLowerCase().replace(' ', '-')}
-                    smooth={true}
-                    className="hover:text-foreground transition-colors cursor-pointer"
+                  <Link 
+                    to={item.toLowerCase()} 
+                    smooth={true} 
+                    className="text-muted hover:text-foreground transition-colors cursor-pointer link-underline inline-block"
                   >
                     {item}
                   </Link>

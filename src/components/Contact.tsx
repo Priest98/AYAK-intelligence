@@ -100,7 +100,7 @@ export default function Contact() {
                 "w-full py-5 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all",
                 formState === 'success' 
                   ? "bg-green-500 text-white" 
-                  : "bg-accent-cyan text-background hover:neon-glow-cyan active:scale-95 disabled:opacity-70"
+                  : "bg-accent-cyan text-background hover-glow-cyan active:scale-95 disabled:opacity-70"
               )}
             >
               {formState === 'idle' && (

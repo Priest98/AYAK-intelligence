@@ -76,7 +76,7 @@ export default function Navbar() {
               to={link.to}
               smooth={true}
               offset={-80}
-              className="text-sm font-medium text-muted hover:text-foreground transition-colors cursor-pointer"
+              className="text-sm font-medium text-muted hover:text-foreground transition-colors cursor-pointer link-underline"
             >
               {link.name}
             </Link>
@@ -118,7 +118,7 @@ export default function Navbar() {
             to="contact"
             smooth={true}
             offset={-80}
-            className="px-5 py-2 rounded-full bg-accent-cyan text-background text-sm font-bold hover:neon-glow-cyan transition-all cursor-pointer"
+            className="px-5 py-2 rounded-full bg-accent-cyan text-background text-sm font-bold hover-glow-cyan transition-all cursor-pointer"
           >
             Consultation
           </Link>

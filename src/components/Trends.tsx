@@ -78,8 +78,7 @@ export default function Trends() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              whileHover={{ y: -5 }}
-              className="p-8 rounded-3xl glass border-white/10 relative group"
+              className="p-8 rounded-3xl glass hover-glass-bright hover-lift relative group"
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${trend.color} opacity-0 group-hover:opacity-5 transition-opacity rounded-3xl`} />
               

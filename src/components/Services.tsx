@@ -97,8 +97,8 @@ export default function Services() {
                 className={cn(
                   "px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 border",
                   activeCategory === cat
-                    ? "bg-accent-cyan text-background border-accent-cyan neon-glow-cyan"
-                    : "glass border-white/10 text-muted hover:border-accent-cyan/50 hover:text-foreground"
+                    ? "bg-accent-cyan text-background border-accent-cyan hover-glow-cyan"
+                    : "glass border-white/10 text-muted hover-glass-bright hover:border-accent-cyan/30"
                 )}
               >
                 {cat}
@@ -123,8 +123,7 @@ export default function Services() {
                   duration: 0.4,
                   layout: { duration: 0.4 }
                 }}
-                whileHover={{ y: -10 }}
-                className="group p-8 rounded-3xl glass hover:bg-white/10 transition-all duration-300 relative overflow-hidden h-full flex flex-col"
+                className="group p-8 rounded-3xl glass hover-glass-bright hover-lift relative overflow-hidden h-full flex flex-col"
               >
                 <div className={cn(
                   "absolute top-0 right-0 w-32 h-32 bg-gradient-to-br opacity-0 group-hover:opacity-10 transition-opacity blur-3xl",
