@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-scroll';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Cpu, LogIn, LogOut, User as UserIcon } from 'lucide-react';
+import { Menu, X, Cpu, LogIn, LogOut, User as UserIcon, Sun, Moon } from 'lucide-react';
 import { auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged, saveUserProfile } from '../lib/firebase';
 import { User } from 'firebase/auth';
 import { cn } from '@/src/lib/utils';
@@ -17,6 +17,9 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [theme, setTheme] = useState<'dark' | 'light'>(
+    () => (typeof window !== 'undefined' ? localStorage.getItem('theme') as 'dark' | 'light' : 'dark') || 'dark'
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,11 +34,20 @@ export default function Navbar() {
       }
     });
 
+    if (theme === 'light') {
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+    }
+    localStorage.setItem('theme', theme);
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
       unsubscribe();
     };
-  }, []);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
 
   const handleSignIn = async () => {
     try {
@@ -107,12 +119,20 @@ export default function Navbar() {
           ) : (
             <button
               onClick={handleSignIn}
-              className="flex items-center gap-2 px-5 py-2 rounded-full glass border-accent-cyan/30 text-accent-cyan text-sm font-bold hover:bg-accent-cyan/10 transition-all"
+              className="flex items-center gap-2 px-5 py-2 rounded-full glass border-accent-cyan/30 text-accent-cyan text-sm font-bold hover-glass-bright transition-all"
             >
               <LogIn className="w-4 h-4" />
               Sign In
             </button>
           )}
+
+          <button
+            onClick={toggleTheme}
+            className="p-2.5 rounded-xl glass hover-glass-bright transition-all text-accent-cyan hover:neon-glow-cyan"
+            aria-label="Toggle Theme"
+          >
+            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
 
           <Link
             to="contact"
@@ -125,12 +145,20 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Toggle */}
-        <button
-          className="md:hidden p-2 text-foreground"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X /> : <Menu />}
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-xl glass text-accent-cyan"
+          >
+            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
+          <button
+            className="p-2 text-foreground"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X /> : <Menu />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
